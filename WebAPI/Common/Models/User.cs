@@ -5,5 +5,8 @@
 
     public class User : MongoIdentityUser
     {
+        public string nick_name { get; set; }
+        public string gender { get; set; }
+        public string phone { get; set; }
     }
 }

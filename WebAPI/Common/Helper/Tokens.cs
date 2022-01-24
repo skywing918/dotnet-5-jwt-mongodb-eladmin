@@ -25,9 +25,10 @@
                 roles = roles.Select(r => r.Name).ToList(),
                 user = userInfo
             };
+            var curToken = await jwtFactory.GenerateEncodedToken(userName, identity);
             var response = new
             {
-                token = await jwtFactory.GenerateEncodedToken(userName, identity),
+                token = $"Bearer {curToken}" ,
                 user = jwtUserDto,
                 expires_in = (int)jwtOptions.ValidFor.TotalSeconds
             };
