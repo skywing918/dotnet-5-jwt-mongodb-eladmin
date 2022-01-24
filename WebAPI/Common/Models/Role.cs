@@ -4,6 +4,13 @@
     using System;
     public class Role : MongoIdentityRole<Guid>
     {
+        public Role()
+        {
 
+        }
+        public Role(string roleName)
+        {
+            this.Name = roleName;
+        }
     }
 }

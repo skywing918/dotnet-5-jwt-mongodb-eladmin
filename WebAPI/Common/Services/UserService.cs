@@ -1,5 +1,6 @@
 ﻿namespace WebAPI.Common.Services
 {
+    using AspNetCore.Identity.MongoDbCore.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Options;
     using MongoDB.Driver;
@@ -15,21 +16,39 @@
     public class UserService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
 
-        public UserService(UserManager<User> userManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
+        public UserService(UserManager<User> userManager, RoleManager<Role> roleManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _jwtFactory = jwtFactory;
             _jwtOptions = jwtOptions.Value;
         }
 
         public List<User> GetUsers() => _userManager.Users.ToList();
-         
+
         public async Task<IdentityResult> CreateAsync(User user, string password)
         {
-            return await _userManager.CreateAsync(user, password);
+            string[] roleNames = { "Admin" };
+            foreach (var roleName in roleNames)
+            {
+
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    var role = new Role(roleName);
+                   await _roleManager.CreateAsync(role);
+                }
+            }
+            var res = await _userManager.CreateAsync(user, password);
+            if (res.Succeeded)
+            {
+                return await _userManager.AddToRoleAsync(user, "Admin");
+            }
+            return res;
         }
 
         public async Task<string> Authenticate(string userName, string password)
@@ -39,7 +58,16 @@
             {
                 return null;
             }
-            return await Tokens.GenerateJwt(identity, _jwtFactory, userName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var currRoles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).Select(r => r.Value).ToList();
+            var roles = _roleManager.Roles.ToList().Where(r => {
+                var currid = r.Id.ToString();
+                if (currRoles.Contains(currid))
+                {
+                    return true;
+                }
+                return false;                
+                }).ToList();
+            return await Tokens.GenerateJwt(identity, roles, _jwtFactory, userName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
