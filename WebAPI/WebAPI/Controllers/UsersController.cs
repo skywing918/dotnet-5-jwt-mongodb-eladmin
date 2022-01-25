@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using WebAPI.Common.Models;
 using WebAPI.Common.Services;
@@ -16,23 +15,20 @@ namespace WebAPI.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
-    public class MenusController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly MenuService service;
-        public MenusController(MenuService _service)
+        private readonly UserService service;
+        public UsersController(UserService _service)
         {
             service = _service;
         }
 
-        // GET api/menus/build
-        [HttpGet("build")]
-        public async Task<IEnumerable<MenuViewModel>> Get()
+        [HttpGet]
+        public IActionResult queryUser([FromQuery]UserQueryCriteria criteria)
         {
-            var roleIds = User.FindAll(ClaimTypes.Role)?.Select(r=>r.Value);
-            var menuDtoList = await service.FindByRoles(roleIds);
-
-            var viewModel = menuDtoList.ToViewModel(c => c.Id, c => c.pid);
-            return viewModel;
+            var pageData = service.GetUsers().Skip((criteria.page)*criteria.size).Take(criteria.size).ToList();
+            var totalRecords = service.GetUsers().Count();
+            return Ok(new PagedResponse<List<UserViewModel>>(pageData.ToViewModel(), totalRecords));
         }
     }
 }

@@ -24,11 +24,7 @@ namespace WebAPI.Controllers
             service = _service;
         }
 
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            return service.GetUsers();
-        }
+        
 
         [AllowAnonymous]
         [Route("login")]

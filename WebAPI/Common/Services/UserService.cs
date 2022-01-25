@@ -3,6 +3,7 @@
     using AspNetCore.Identity.MongoDbCore.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Options;
+    using MongoDB.Bson;
     using MongoDB.Driver;
     using Newtonsoft.Json;
     using System.Collections.Generic;
@@ -28,7 +29,7 @@
             _jwtOptions = jwtOptions.Value;
         }
 
-        public List<User> GetUsers() => _userManager.Users.ToList();
+        public IQueryable<User> GetUsers() => _userManager.Users;
 
         public async Task<IdentityResult> CreateAsync(User user, string password)
         {
@@ -40,6 +41,10 @@
                 if (!roleExist)
                 {
                     var role = new Role(roleName);
+                    role.MenuIds = new List<string>
+                    {
+                        ObjectId.GenerateNewId().ToString()
+                    };
                    await _roleManager.CreateAsync(role);
                 }
             }

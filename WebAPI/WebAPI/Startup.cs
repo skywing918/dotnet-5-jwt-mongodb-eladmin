@@ -103,7 +103,9 @@ namespace WebAPI
             services.AddIdentity<User, Role>().AddMongoDbStores<User, Role, Guid>(connectionString, "EladminDb");
 
             services.AddScoped<UserService>();
+            services.AddScoped<RoleService>();
             services.AddScoped<MenuService>();
+            services.AddScoped<DeptService>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

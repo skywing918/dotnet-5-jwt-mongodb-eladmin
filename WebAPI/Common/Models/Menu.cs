@@ -1,10 +1,13 @@
 ﻿
 namespace WebAPI.Common.Models
 {
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
     using WebAPI.Common.Models.Enum;
 
     public class Menu : MongoEntity
     {
+        [BsonRepresentation(BsonType.ObjectId)]
         public string pid { get; set; }
         public int sub_count { get; set; }
         public MenuType type { get; set; }
