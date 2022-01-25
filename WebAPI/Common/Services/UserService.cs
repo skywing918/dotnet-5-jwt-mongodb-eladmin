@@ -33,26 +33,9 @@
 
         public async Task<IdentityResult> CreateAsync(User user, string password)
         {
-            string[] roleNames = { "Admin" };
-            foreach (var roleName in roleNames)
-            {
 
-                var roleExist = await _roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
-                {
-                    var role = new Role(roleName);
-                    role.MenuIds = new List<string>
-                    {
-                        ObjectId.GenerateNewId().ToString()
-                    };
-                   await _roleManager.CreateAsync(role);
-                }
-            }
             var res = await _userManager.CreateAsync(user, password);
-            if (res.Succeeded)
-            {
-                return await _userManager.AddToRoleAsync(user, "Admin");
-            }
+           
             return res;
         }
 

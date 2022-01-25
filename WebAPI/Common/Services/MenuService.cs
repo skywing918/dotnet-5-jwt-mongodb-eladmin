@@ -34,82 +34,16 @@
             return await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
         }
 
+        public async Task<IQueryable<Menu>> GetMenus()
+        {
+           var results = await _client.GetAllList<Menu>(collectionName);
+           return results.AsQueryable();
+        }
+
         public async Task<Menu> Create(Menu menu)
         {
             var result = await _client.AddRecord(collectionName, menu).ConfigureAwait(false);
             return result;
-        }
-
-        public async Task InitialData()
-        {
-            var root =
-                new Menu
-                {
-                    //Id="1",
-                    pid = null,
-                    sub_count = 7,
-                    type = MenuType.Folder,
-                    title = "系统管理",
-                    name = null,
-                    component = null,
-                    menu_sort = 1,
-                    icon = "system",
-                    path = "system",
-                    i_frame = false,
-                    cache = false,
-                    hidden = false,
-                    permission = null,
-                    create_by = null,
-                    update_by = null,
-                    create_time = DateTime.Now,
-                };
-
-            var map = new List<Menu>
-            {
-                new Menu                {
-
-                    sub_count=3,
-                    type = MenuType.Menu,
-                    title = "用户管理",
-                    name ="User",
-                    component="system/user/index",
-                    menu_sort=2,
-                    icon="peoples",
-                    path="user",
-                    i_frame=false,
-                    cache=false,
-                    hidden=false,
-                    permission="user:list",
-                    create_by=null,
-                    update_by=null,
-                    create_time = DateTime.Now,
-                },
-                new Menu                {
-
-                    sub_count=3,
-                    type = MenuType.Menu,
-                    title = "菜单管理",
-                    name ="Menu",
-                    component="system/menu/index",
-                    menu_sort=5,
-                    icon="menu",
-                    path="menu",
-                    i_frame=false,
-                    cache=false,
-                    hidden=false,
-                    permission="menu:list",
-                    create_by=null,
-                    update_by=null,
-                    create_time = DateTime.Now,
-                },
-            };
-
-            var rootData = await _client.AddRecord(collectionName, root).ConfigureAwait(false);
-            foreach (var curr in map)
-            {
-                curr.pid = rootData.Id;
-                await _client.AddRecord(collectionName, curr).ConfigureAwait(false);
-            }
         }
     }
 }
