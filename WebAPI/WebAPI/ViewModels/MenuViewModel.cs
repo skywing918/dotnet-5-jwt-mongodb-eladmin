@@ -6,11 +6,11 @@
     using WebAPI.Common.Models;
     using WebAPI.Common.Models.Enum;
 
-    public class MenuViewModel
+    public class MenuVoViewModel
     {
         public bool? alwaysShow { get; set; }
 
-        public IEnumerable<MenuViewModel> Children { get; set; }
+        public IEnumerable<MenuVoViewModel> Children { get; set; }
 
         public string component { get; set; }
         public bool hidden { get; set; }
@@ -29,9 +29,30 @@
         public string title { get; set; }
     }
 
+    public class MenuViewModel
+    {
+        public string id { get; set; }
+        public string title { get; set; }
+        public string componentName { get; set; }
+        public int menuSort { get; set; }
+        public string component { get; set; }
+        public string path { get; set; }
+        public int type { get; set; }
+        public string permission { get; set; }
+        public string icon { get; set; }
+        public bool cache { get; set; }
+        public bool hidden { get; set; }
+        public string pid { get; set; }
+        public bool iFrame { get; set; }       
+        public DateTime createTime { get; set; }
+        public bool hasChildren { get; set; }
+        public bool leaf { get; set; }
+        public string label { get; set; }
+    }
+
     public static class MenuViewModelExtensions
     {
-        public static IEnumerable<MenuViewModel> ToViewModel(
+        public static IEnumerable<MenuVoViewModel> ToViewModel(
             this IEnumerable<Menu> menuDtos,
             Func<Menu, string> id_selector,
             Func<Menu, string> parent_id_selector,
@@ -41,7 +62,7 @@
             foreach (var menuDTO in menuDtos.Where(c => EqualityComparer<string>.Default.Equals(parent_id_selector(c), root_id)))
             {
                 var menuDtoList = menuDtos.ToViewModel(id_selector, parent_id_selector, id_selector(menuDTO));
-                var menuVo = new MenuViewModel();
+                var menuVo = new MenuVoViewModel();
                 menuVo.name = string.IsNullOrEmpty(menuDTO.component) ? menuDTO.title : menuDTO.component;
                 menuVo.path = menuDTO.pid == null ? $"/{menuDTO.path}" : menuDTO.path;
                 menuVo.hidden = menuDTO.hidden;
@@ -75,7 +96,7 @@
                 }
                 else if (menuDTO.pid == null)
                 {
-                    MenuViewModel menuVo1 = new MenuViewModel();
+                    MenuVoViewModel menuVo1 = new MenuVoViewModel();
                     menuVo1.meta = menuVo.meta;
                     if (!menuDTO.i_frame)
                     {
@@ -90,10 +111,40 @@
                     menuVo.name = null;
                     menuVo.meta = null;
                     menuVo.component = "Layout";
-                    menuVo.Children = new List<MenuViewModel> { menuVo1 };
+                    menuVo.Children = new List<MenuVoViewModel> { menuVo1 };
                 }
                 yield return menuVo;
             }
+        }
+
+        public static MenuViewModel ToViewModel(this Menu curr)
+        {
+            var model = new MenuViewModel
+            {
+                cache = curr.cache,
+                createTime = curr.create_time,
+                component = curr.component,
+                componentName = curr.name,
+                hidden = curr.hidden,
+                permission = curr.permission,
+                iFrame = curr.i_frame,
+                icon = curr.icon,
+                id = curr.Id,                
+                menuSort = curr.menu_sort,
+                path = curr.path,
+                title = curr.title,
+                type = (int)curr.type,
+                hasChildren = curr.sub_count > 0,
+                leaf = curr.sub_count <= 0,
+                label = curr.title,                
+            };
+            return model;
+        }
+
+        public static List<MenuViewModel> ToViewModel(this List<Menu> menus)
+        {
+            var models = menus.Select(u => u.ToViewModel()).ToList();
+            return models;
         }
     }
 }

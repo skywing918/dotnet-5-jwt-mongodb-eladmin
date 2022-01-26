@@ -10,7 +10,7 @@
 
     public class Tokens
     {
-        public static async Task<string> GenerateJwt(ClaimsIdentity identity, List<Role> roles, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions, JsonSerializerSettings serializerSettings)
+        public static async Task<string> GenerateJwt(ClaimsIdentity identity, List<string> permissions, List<Role> roles, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions, JsonSerializerSettings serializerSettings)
         {
             var userInfo = new
             { 
@@ -22,7 +22,7 @@
             };
             var jwtUserDto = new
             {
-                roles = roles.Select(r => r.Name).ToList(),
+                roles = permissions,
                 user = userInfo
             };
             var curToken = await jwtFactory.GenerateEncodedToken(userName, identity);

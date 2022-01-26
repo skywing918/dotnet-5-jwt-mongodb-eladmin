@@ -25,8 +25,6 @@
         }
         public async Task<IEnumerable<Menu>> FindByRoles(IEnumerable<string> roleIds)
         {
-            //await InitialData();
-
             var roles = await _roleService.findById(roleIds);
             var menuIds = roles.SelectMany(r => r.MenuIds.ToList());
             var filterBuilder = Builders<Menu>.Filter;
@@ -38,6 +36,12 @@
         {
            var results = await _client.GetAllList<Menu>(collectionName);
            return results.AsQueryable();
+        }
+
+        public async Task<IQueryable<Menu>> GetMenusByCriteria(FilterDefinition<Menu> filter)        {
+           
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
         }
 
         public async Task<Menu> Create(Menu menu)

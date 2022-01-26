@@ -82,6 +82,24 @@
                 },
                 new Menu
                 {
+                    sub_count=3,
+                    type = MenuType.Menu,
+                    title = "角色管理",
+                    name ="Role",
+                    component="system/role/index",
+                    menu_sort=3,
+                    icon="role",
+                    path="role",
+                    i_frame=false,
+                    cache=false,
+                    hidden=false,
+                    permission="roles:list",
+                    create_by=null,
+                    update_by=null,
+                    create_time = DateTime.Now,
+                },
+                new Menu
+                {
 
                     sub_count=3,
                     type = MenuType.Menu,
@@ -99,6 +117,63 @@
                     update_by=null,
                     create_time = DateTime.Now,
                 },
+                 new Menu
+                {
+
+                    sub_count=3,
+                    type = MenuType.Menu,
+                    title = "部门管理",
+                    name ="Dept",
+                    component="system/dept/index",
+                    menu_sort=6,
+                    icon="dept",
+                    path="dept",
+                    i_frame=false,
+                    cache=false,
+                    hidden=false,
+                    permission="dept:list",
+                    create_by=null,
+                    update_by=null,
+                    create_time = DateTime.Now,
+                } ,
+                 new Menu
+                {
+
+                    sub_count=3,
+                    type = MenuType.Menu,
+                    title = "岗位管理",
+                    name ="Job",
+                    component="system/job/index",
+                    menu_sort=7,
+                    icon="Steve-Jobs",
+                    path="job",
+                    i_frame=false,
+                    cache=false,
+                    hidden=false,
+                    permission="job:list",
+                    create_by=null,
+                    update_by=null,
+                    create_time = DateTime.Now,
+                },
+                  new Menu
+                {
+
+                    sub_count=3,
+                    type = MenuType.Menu,
+                    title = "字典管理",
+                    name ="Dict",
+                    component="system/dict/index",
+                    menu_sort=8,
+                    icon="dictionary",
+                    path="dict",
+                    i_frame=false,
+                    cache=false,
+                    hidden=false,
+                    permission="dict:list",
+                    create_by=null,
+                    update_by=null,
+                    create_time = DateTime.Now,
+                },
             };
             foreach (var curr in map)
             {
@@ -110,8 +185,14 @@
         private async Task InitialRoleData()
         {
             var menus = await menuService.GetMenus();
-            var role = new Role("Admin");
+            var role = new Role("超级管理员");
             role.MenuIds = menus.Select(m => m.Id).ToList();
+            role.level = 1;
+            role.dataScope = "全部";
+            role.description = "-";
+            role.update_by = "admin";
+            role.create_time = DateTime.Now;
+            role.update_time = DateTime.Now;
             await roleService.CreateAsync(role);
         }
 
@@ -121,8 +202,15 @@
             var user = new User()
             {
                 UserName = "admin",
-                Email = "admin@yoyo.com",
-                Roles = new List<Guid> { roleId.Value }
+                nick_name = "管理员",
+                gender = "男",
+                phone = "18888888888",
+                Email = "201507802@qq.com",
+                avatar_name = "avatar-20200806032259161.png",
+                avatar_path = "/Users/jie/Documents/work/me/admin/eladmin/~/avatar/avatar-20200806032259161.png",
+                Roles = new List<Guid> { roleId.Value },
+                is_admin = true,
+                enabled = true
             };
             var res = await userService.CreateAsync(user, "P@ssw0rd");            
         }

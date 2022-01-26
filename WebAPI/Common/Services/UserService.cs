@@ -55,7 +55,8 @@
                 }
                 return false;                
                 }).ToList();
-            return await Tokens.GenerateJwt(identity, roles, _jwtFactory, userName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var permissions = new List<string> { "admin" };
+            return await Tokens.GenerateJwt(identity, permissions, roles, _jwtFactory, userName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
 
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)

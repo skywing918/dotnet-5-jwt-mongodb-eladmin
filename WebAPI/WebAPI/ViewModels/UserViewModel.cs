@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebAPI.Common.Models;
 
@@ -6,7 +7,7 @@ namespace WebAPI.ViewModels
 {
     public class UserViewModel
     {
-        public int id { get; set; }
+        public Guid id { get; set; }
 
         public DeptViewModel dept { get; set; }
         public string name { get; set; }
@@ -25,13 +26,17 @@ namespace WebAPI.ViewModels
         {
             var model = new UserViewModel
             {
+                id = user.Id,
                 dept = new DeptViewModel
                 {
                     name = "华南分部",
-                },                
+                },
                 username = user.UserName,
                 nickName = user.nick_name,
-                email = user.Email
+                email = user.Email,
+                enabled = user.enabled,
+                gender = user.gender,
+                phone = user.phone,               
             };
             return model;
         }
