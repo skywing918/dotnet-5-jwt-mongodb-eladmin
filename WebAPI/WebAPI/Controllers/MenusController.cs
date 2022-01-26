@@ -36,6 +36,33 @@ namespace WebAPI.Controllers
             return viewModel;
         }
 
+        // GET api/menus/lazy
+        [HttpGet("lazy")]
+        public async Task<IEnumerable<MenuViewModel>> queryAllMenu(string pid)
+        {
+            if (pid.Equals("0"))
+            {
+                pid = null;
+            }
+            var menus = await service.GetMenus(pid);
+            var viewModel = menus.ToList().ToViewModel();
+            return viewModel;
+        }
+
+        // GET api/menus/child
+        [HttpGet("child")]
+        public async Task<IEnumerable<string>> childMenu(string id)
+        {
+           var menuSet = new List<Menu>();
+            var curr = await service.FindOne(id);
+            menuSet.Add(curr);
+            var menuList = await service.GetMenus(id);
+            menuSet.Add(curr);
+            menuSet = (await service.getChildMenus(menuList, menuSet)).ToList();
+            var viewModel = menuSet.Select(m => m.Id).ToList();
+            return viewModel;
+        }
+
         [HttpGet]
         public async Task<IActionResult> queryMenu([FromQuery] MenuQueryCriteria criteria)
         {

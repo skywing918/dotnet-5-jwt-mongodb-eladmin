@@ -32,11 +32,8 @@
             return await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
         }
 
-        public async Task<IQueryable<Menu>> GetMenus()
-        {
-           var results = await _client.GetAllList<Menu>(collectionName);
-           return results.AsQueryable();
-        }
+
+        
 
         public async Task<IQueryable<Menu>> GetMenusByCriteria(FilterDefinition<Menu> filter)        {
            
@@ -48,6 +45,37 @@
         {
             var result = await _client.AddRecord(collectionName, menu).ConfigureAwait(false);
             return result;
+        }
+
+        public async Task<IEnumerable<Menu>> getChildMenus(IEnumerable<Menu> menuList, List<Menu> menuSet)
+        {
+            foreach(var menu in menuList)
+            {
+                menuSet.Add(menu); 
+                var filterBuilder = Builders<Menu>.Filter;
+                var filter = filterBuilder.Eq(x => x.pid, menu.Id);
+                var menus = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+                if (menus.Count() != 0)
+                {
+                    await getChildMenus(menus, menuSet);
+                }
+            }
+
+            return menuSet.AsQueryable();
+        }
+
+        public async Task<IQueryable<Menu>> GetMenus(string? pid)
+        {
+            var filterBuilder = Builders<Menu>.Filter;
+            var filter = filterBuilder.Eq(x => x.pid, pid);
+            var menus = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+
+            return menus.AsQueryable();
+        }
+
+        public async Task<Menu> FindOne(string id)
+        {
+            return await _client.GetRecordById<Menu>(collectionName, menu => menu.Id, id).ConfigureAwait(false);
         }
     }
 }

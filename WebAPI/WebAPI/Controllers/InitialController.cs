@@ -43,7 +43,7 @@
                 {
                     //Id="1",
                     pid = null,
-                    sub_count = 7,
+                    sub_count = 6,
                     type = MenuType.Folder,
                     title = "系统管理",
                     name = null,
@@ -64,7 +64,7 @@
             {
                 new Menu
                 {
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "用户管理",
                     name ="User",
@@ -82,7 +82,7 @@
                 },
                 new Menu
                 {
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "角色管理",
                     name ="Role",
@@ -101,7 +101,7 @@
                 new Menu
                 {
 
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "菜单管理",
                     name ="Menu",
@@ -120,7 +120,7 @@
                  new Menu
                 {
 
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "部门管理",
                     name ="Dept",
@@ -139,7 +139,7 @@
                  new Menu
                 {
 
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "岗位管理",
                     name ="Job",
@@ -158,7 +158,7 @@
                   new Menu
                 {
 
-                    sub_count=3,
+                    sub_count=0,
                     type = MenuType.Menu,
                     title = "字典管理",
                     name ="Dict",
@@ -184,7 +184,7 @@
 
         private async Task InitialRoleData()
         {
-            var menus = await menuService.GetMenus();
+            var menus = await menuService.GetMenus(null);
             var role = new Role("超级管理员");
             role.MenuIds = menus.Select(m => m.Id).ToList();
             role.level = 1;
