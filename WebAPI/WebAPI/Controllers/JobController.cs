@@ -16,31 +16,32 @@ namespace WebAPI.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
-    public class DeptController : ControllerBase
+    public class JobController : ControllerBase
     {
-        private readonly DeptService service;
-        public DeptController(DeptService _service)
+        private readonly JobService service;
+        public JobController(JobService _service)
         {
             service = _service;
         }
+
         [HttpGet]
-        public async Task<IActionResult> queryDept([FromQuery] DeptQueryCriteria criteria)
+        public async Task<IActionResult> queryJob([FromQuery] JobQueryCriteria criteria)
         {
-            var filterBuilder = Builders<Dept>.Filter;
-            var filter = filterBuilder.Eq(x => x.pid, criteria.pid);
-            var depts = await service.queryAll(filter);
-            List<Dept> pageData;
+            var filterBuilder = Builders<Job>.Filter;
+            var filter = filterBuilder.Empty;//.Eq(x => x.pid, criteria.pid);
+            var menus = await service.queryAll(filter);
+            List<Job> pageData;
             if (criteria.size != 0)
             {
-                pageData = depts.Skip((criteria.page) * criteria.size).Take(criteria.size).ToList();
+                pageData = menus.Skip((criteria.page) * criteria.size).Take(criteria.size).ToList();
             }
             else
             {
-                pageData = depts.ToList();
+                pageData = menus.ToList();
             }
 
-            var totalRecords = depts.Count();
-            return Ok(new PagedResponse<List<DeptViewModel>>(pageData.ToViewModel(), totalRecords));
+            var totalRecords = menus.Count();
+            return Ok(new PagedResponse<List<JobViewModel>>(pageData.ToViewModel(), totalRecords));
         }
     }
 }

@@ -105,7 +105,10 @@ namespace WebAPI
             services.AddScoped<UserService>();
             services.AddScoped<RoleService>();
             services.AddScoped<MenuService>();
-            services.AddScoped<DeptService>();            
+            services.AddScoped<DeptService>();
+            services.AddScoped<JobService>();
+            services.AddScoped<DictService>();
+            services.AddScoped<DictDetailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

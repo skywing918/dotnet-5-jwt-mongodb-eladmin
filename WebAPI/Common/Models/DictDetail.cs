@@ -1,8 +1,7 @@
 ﻿namespace WebAPI.Common.Models
 {
-    public class DictDetail : MongoEntity
+    public class DictDetail 
     {
-        public string dict_id { get; set; }
         public DictSmall dict { get; set; }
         public string label { get; set; }
         public string value { get; set; }

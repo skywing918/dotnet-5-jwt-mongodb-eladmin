@@ -23,6 +23,10 @@
 
 
         }
+        public async Task<IEnumerable<Menu>> GetAll()
+        {
+            return await _client.GetAllList<Menu>(collectionName).ConfigureAwait(false);
+        }
         public async Task<IEnumerable<Menu>> FindByRoles(IEnumerable<string> roleIds)
         {
             var roles = await _roleService.findById(roleIds);

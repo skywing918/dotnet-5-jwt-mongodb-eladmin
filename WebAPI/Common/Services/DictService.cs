@@ -1,6 +1,7 @@
 ﻿namespace WebAPI.Common.Services
 {
     using Microsoft.Extensions.Configuration;
+    using MongoDB.Driver;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,22 +9,22 @@
     using System.Threading.Tasks;
     using WebAPI.Common.Helper;
     using WebAPI.Common.Models;
-    public class DictDetailService
+    public class DictService
     {
         private static readonly string collectionName = "dict";
         private readonly MongoDbHelper _client;
-        public DictDetailService(IConfiguration configuation)
+        public DictService(IConfiguration configuation)
         {
             _client = new MongoDbHelper(configuation.GetConnectionString("EladminDb"));
         }
 
-        public async Task<IQueryable<DictDetail>> queryAll(string dictName)
+        public async Task<IQueryable<Dict>> queryAll(FilterDefinition<Dict> filter)
         {
-            var curr = await _client.GetRecordById<Dict>(collectionName, dict => dict.name, dictName).ConfigureAwait(false);            
-            return curr.dictDetails.AsQueryable();
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
         }
 
-        public async Task<DictDetail> Create(DictDetail dept)
+        public async Task<Dict> Create(Dict dept)
         {
             var result = await _client.AddRecord(collectionName, dept).ConfigureAwait(false);
             return result;

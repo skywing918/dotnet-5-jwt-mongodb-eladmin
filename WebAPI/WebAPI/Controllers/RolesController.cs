@@ -26,14 +26,22 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult queryRole([FromQuery] RoleQueryCriteria criteria)
         {
-            var pageData = service.GetRoles().Skip((criteria.page) * criteria.size).Take(criteria.size).ToList();
+            var pageData = service.GetRoles().Skip((criteria.page) * criteria.size).Take(criteria.size);
             var totalRecords = service.GetRoles().Count();
             return Ok(new PagedResponse<List<RoleViewModel>>(pageData.ToViewModel(), totalRecords));
         }
 
+        // GET api/roles/all
+        [HttpGet("all")]
+        public async Task<IActionResult> queryAllRole()
+        {
+            var result = service.GetRoles();
+            return new OkObjectResult(JsonConvert.SerializeObject(result.ToViewModel()));
+        }
+
         // GET api/roles/level
         [HttpGet("level")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> getRoleLevel()
         {
             var result = new { level = 1 };
             return new OkObjectResult(JsonConvert.SerializeObject(result));

@@ -17,11 +17,18 @@
         private readonly UserService userService;
         private readonly RoleService roleService;
         private readonly MenuService menuService;
-        public InitialController(UserService _userService, RoleService _roleService, MenuService _menuService)
+        private readonly DeptService deptService;
+        private readonly JobService jobService;
+        private readonly DictService dictService;
+
+        public InitialController(UserService _userService, RoleService _roleService, MenuService _menuService, DeptService _deptService, JobService _jobService, DictService _dictService)
         {
             userService = _userService;
             roleService = _roleService;
             menuService = _menuService;
+            deptService = _deptService;
+            jobService = _jobService;
+            dictService = _dictService;
         }
 
         // POST api/user
@@ -32,6 +39,9 @@
 
             await InitialMenuData();
             await InitialRoleData();
+            await InitialDeptData();
+            await InitialJobData();
+            await InitialDictData();
             await InitialUserData();
             return new OkObjectResult("Initial finished");
         }
@@ -184,7 +194,7 @@
 
         private async Task InitialRoleData()
         {
-            var menus = await menuService.GetMenus(null);
+            var menus = await menuService.GetAll();
             var role = new Role("超级管理员");
             role.MenuIds = menus.Select(m => m.Id).ToList();
             role.level = 1;
@@ -196,6 +206,110 @@
             await roleService.CreateAsync(role);
         }
 
+        private async Task InitialDeptData()
+        {
+            var root = await deptService.Create(new Dept
+            {
+                pid = null,
+                sub_count = 1,
+                name = "华南分部",
+                enabled = true,
+                create_by = "admin",
+                update_by = "admin",
+                create_time = DateTime.Now,
+            });
+            await deptService.Create(new Dept
+            {
+                pid = root.Id,
+                name = "研发部",
+                enabled = true,
+                create_by = "admin",
+                update_by = "admin",
+                create_time = DateTime.Now,
+            });
+        }
+
+        private async Task InitialJobData()
+        {
+            var jobs = new List<Job>
+            {
+                new Job
+                {
+                    name="人事专员",
+                    enabled = true,
+                    job_sort = 3,
+                    create_time=DateTime.Now
+                },
+                new Job
+                {
+                    name="产品经理",
+                    enabled = true,
+                    job_sort = 4,
+                    create_time=DateTime.Now
+                },
+                new Job
+                {
+                    name="全栈开发",
+                    enabled = true,
+                    job_sort = 2,
+                    create_time=DateTime.Now
+                },
+                new Job
+                {
+                    name="软件测试",
+                    enabled = true,
+                    job_sort = 5,
+                    create_time=DateTime.Now
+                }
+
+            };
+            foreach (var curr in jobs)
+            {
+                await jobService.Create(curr);
+            }
+
+        }
+
+        private async Task InitialDictData()
+        {
+            var dicts = new List<Dict>
+            {
+                new Dict {
+                   name = "user_status",
+                   description = "用户状态",
+                   dictDetails = new List<DictDetail>
+                   {
+                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
+                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                   }
+               },
+                new Dict
+              {
+                  name = "dept_status",
+                  description = "用户状态",
+                  dictDetails = new List<DictDetail>
+                  {
+                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
+                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                  }
+              },
+               new Dict
+              {
+                  name = "job_status",
+                  description = "用户状态",
+                  dictDetails = new List<DictDetail>
+                  {
+                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
+                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                  }
+              }
+
+            };
+            foreach (var curr in dicts)
+            {
+                await dictService.Create(curr);
+            }
+        }
         private async Task InitialUserData()
         {
             var roleId = roleService.GetRoles().FirstOrDefault()?.Id;
@@ -212,7 +326,7 @@
                 is_admin = true,
                 enabled = true
             };
-            var res = await userService.CreateAsync(user, "P@ssw0rd");            
+            var res = await userService.CreateAsync(user, "P@ssw0rd");
         }
 
     }

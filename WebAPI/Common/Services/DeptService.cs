@@ -1,6 +1,7 @@
 ﻿namespace WebAPI.Common.Services
 {
     using Microsoft.Extensions.Configuration;
+    using MongoDB.Driver;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,7 +11,7 @@
     using WebAPI.Common.Models;
     public class DeptService
     {
-        private static readonly string collectionName = "Depts";
+        private static readonly string collectionName = "depts";
         private readonly MongoDbHelper _client;
 
         public DeptService(IConfiguration configuation)
@@ -18,31 +19,33 @@
             _client = new MongoDbHelper(configuation.GetConnectionString("EladminDb"));
         }
 
-        public IQueryable<Dept> GetDepts()
+
+        public async Task<IQueryable<Dept>> queryAll(FilterDefinition<Dept> filter)
         {
-            return new List<Dept>
-            {
-                new Dept
-                {
-                    Id="2",
-                    pid="7",
-                    name ="研发部",
-                    enabled = true,
-                    create_by=null,
-                    update_by=null,
-                    create_time = DateTime.Now,
-                },
-                new Dept
-                {
-                    Id="7",
-                    pid=null,                    
-                    name ="华南分部",
-                    enabled = true,
-                    create_by=null,
-                    update_by=null,
-                    create_time = DateTime.Now,
-                },
-            }.AsQueryable();
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
+        }
+
+        public async Task<Dept> findById(string id)
+        {
+            var result = await _client.GetRecordById <Dept>(collectionName, dept=>dept.Id,id).ConfigureAwait(false);
+            return result;
+        }
+
+        public async Task<IQueryable<Dept>> findByPid(string pid)
+        {
+            var filterBuilder = Builders<Dept>.Filter;
+            var filter = filterBuilder.Eq(x => x.pid, pid);
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
+        }
+
+        public async Task<IQueryable<Dept>> findByRoleId(Guid roleId)
+        {
+            var filterBuilder = Builders<Dept>.Filter;
+            var filter = filterBuilder.AnyEq(x => x.roleIds, roleId);
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
         }
 
         public async Task<Dept> Create(Dept dept)

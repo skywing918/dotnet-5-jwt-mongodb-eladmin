@@ -38,7 +38,7 @@ namespace WebAPI.ViewModels
             return model;
         }
 
-        public static List<RoleViewModel> ToViewModel(this List<Role> roles)
+        public static List<RoleViewModel> ToViewModel(this IEnumerable<Role> roles)
         {
             var models = roles.Select(u => u.ToViewModel()).ToList();
             return models;

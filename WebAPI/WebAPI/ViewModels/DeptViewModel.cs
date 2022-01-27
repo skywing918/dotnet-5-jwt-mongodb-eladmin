@@ -12,16 +12,30 @@ namespace WebAPI.ViewModels
         public string name { get; set; }
         public bool enabled { get; set; }
         public string pid { get; set; }
+        public int deptSort { get; set; }
+        public int subCount { get; set; }
+        public bool hasChildren { get; set; }
+        public bool leaf { get; set; }
+        public string label { get; set; }
+        public DateTime createTime { get; set; }
+        public string updateBy { get; set; }
+        public DateTime updateTime { get; set; }
     }
     public static class DeptViewModelExtensions
     {
-        public static DeptViewModel ToViewModel(this Dept dept)
+        public static DeptViewModel ToViewModel(this Dept curr)
         {
             var model = new DeptViewModel
             {
-                id = dept.Id,
-                name = dept.name,
-                pid=dept.pid
+                id = curr.Id,
+                name = curr.name,
+                pid= curr.pid,
+                enabled = curr.enabled,
+                deptSort = curr.deptSort,
+                subCount = curr.sub_count,
+                hasChildren = curr.sub_count > 0,
+                leaf = curr.sub_count <= 0,
+                label = curr.name,
             };
             return model;
         }
