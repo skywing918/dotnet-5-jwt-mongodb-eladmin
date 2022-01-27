@@ -32,6 +32,19 @@
             return result;
         }
 
+        public async Task<List<Dept>>getSuperior(Dept deptDto, List<Dept> depts)
+        {
+            if (deptDto.pid == null)
+            {
+                var found = await findByPid(null);
+                depts.AddRange(found);
+                return depts;
+            }
+            depts.AddRange(await findByPid(deptDto.pid));
+            var databyId = await findById(deptDto.pid);
+            return await getSuperior(databyId, depts);
+        }
+
         public async Task<IQueryable<Dept>> findByPid(string pid)
         {
             var filterBuilder = Builders<Dept>.Filter;
@@ -52,6 +65,20 @@
         {
             var result = await _client.AddRecord(collectionName, dept).ConfigureAwait(false);
             return result;
+        }
+
+        public async Task Update(string id, Dept curr)
+        {
+            curr.Id = id;
+            await _client.UpdateRecord(collectionName, dept => dept.Id, id, curr).ConfigureAwait(false);
+        }
+
+        public async Task Delete(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                await _client.DeleteRecord<Dept>(collectionName, curr => curr.Id, id).ConfigureAwait(false);
+            }
         }
     }
 }

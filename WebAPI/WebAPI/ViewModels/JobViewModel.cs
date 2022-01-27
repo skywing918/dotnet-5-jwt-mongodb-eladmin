@@ -17,6 +17,18 @@ namespace WebAPI.ViewModels
 
     public static class JobViewModelExtensions
     {
+        public static Job ToModel(this JobViewModel curr)
+        {
+            var model = new Job
+            {
+               name = curr.name,
+               enabled = curr.enabled,
+               job_sort = curr.jobSort,
+               create_time = curr.createTime
+            };
+            return model;
+        }
+
         public static JobViewModel ToViewModel(this Job curr)
         {
             var model = new JobViewModel

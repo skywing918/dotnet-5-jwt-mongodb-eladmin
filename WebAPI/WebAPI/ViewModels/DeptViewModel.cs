@@ -11,6 +11,8 @@ namespace WebAPI.ViewModels
         public string id { get; set; }
         public string name { get; set; }
         public bool enabled { get; set; }
+        public string isTop { get; set; }
+        
         public string pid { get; set; }
         public int deptSort { get; set; }
         public int subCount { get; set; }
@@ -23,6 +25,19 @@ namespace WebAPI.ViewModels
     }
     public static class DeptViewModelExtensions
     {
+        public static Dept ToModel(this DeptViewModel curr)
+        {
+            var model = new Dept
+            {
+                name = curr.name,
+                enabled = curr.enabled,
+                create_time = curr.createTime,
+                deptSort = curr.deptSort,
+                pid = curr.pid
+            };
+            return model;
+        }
+
         public static DeptViewModel ToViewModel(this Dept curr)
         {
             var model = new DeptViewModel

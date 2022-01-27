@@ -43,5 +43,27 @@ namespace WebAPI.Controllers
             var totalRecords = menus.Count();
             return Ok(new PagedResponse<List<JobViewModel>>(pageData.ToViewModel(), totalRecords));
         }
+
+        [HttpPost]
+        public async Task<Job> Post([FromBody] JobViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.create_time = DateTime.Now;
+            return await service.Create(curr);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] JobViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.update_time = DateTime.Now;
+            await service.Update(viewModel.id,curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
+        }
     }
 }

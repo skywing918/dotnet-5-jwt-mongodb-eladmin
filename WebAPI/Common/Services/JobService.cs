@@ -30,5 +30,19 @@
             var result = await _client.AddRecord(collectionName, curr).ConfigureAwait(false);
             return result;
         }
+
+        public async Task Update(string id, Job curr)
+        {
+            curr.Id = id;
+            await _client.UpdateRecord(collectionName, job=> job.Id, id, curr).ConfigureAwait(false);           
+        }
+
+        public async Task Delete(List<string> ids)
+        {
+            foreach(var id in ids)
+            {
+                await _client.DeleteRecord<Job>(collectionName, curr => curr.Id, id).ConfigureAwait(false);
+            }
+        }
     }
 }

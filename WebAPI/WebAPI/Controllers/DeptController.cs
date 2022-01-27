@@ -42,5 +42,39 @@ namespace WebAPI.Controllers
             var totalRecords = depts.Count();
             return Ok(new PagedResponse<List<DeptViewModel>>(pageData.ToViewModel(), totalRecords));
         }
+
+        [HttpPost("superior")]
+        public async Task<IActionResult> getDeptSuperior([FromBody] string id)
+        {
+            var deptDtos = new List<Dept>();
+
+            var deptDto = await service.findById(id);
+            var depts = await service.getSuperior(deptDto, new List<Dept>());
+            deptDtos.AddRange(depts);
+
+            return Ok(new PagedResponse<List<DeptViewModel>>(deptDtos.ToViewModel(), deptDtos.Count()));
+        }
+
+        [HttpPost]
+        public async Task<Dept> Post([FromBody] DeptViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.create_time = DateTime.Now;
+            return await service.Create(curr);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] DeptViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.update_time = DateTime.Now;
+            await service.Update(viewModel.id, curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
+        }
     }
 }
