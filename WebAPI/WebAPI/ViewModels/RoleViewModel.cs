@@ -9,8 +9,8 @@ namespace WebAPI.ViewModels
     public class RoleViewModel
     {
         public Guid id { get; set; }
-        public List<MenuViewModel> menus { get; set; }
-        public List<DeptViewModel> depts { get; set; }
+        public IEnumerable<MenuViewModel> menus { get; set; }
+        public IEnumerable<DeptViewModel> depts { get; set; }
         public string name { get; set; }
         public string dataScope { get; set; }        
         public int level { get; set; }
@@ -22,18 +22,22 @@ namespace WebAPI.ViewModels
 
     public static class RoleViewModelExtensions
     {
-        public static RoleViewModel ToViewModel(this Role role)
+        public static RoleViewModel ToViewModel(this Role curr)
         {
+            // build menu
+            var menuObjs = curr.MenuIds.Select(id => new MenuViewModel { id = id });
+
             var model = new RoleViewModel
             {
-                id = role.Id,
-                name = role.Name,
-                dataScope = role.dataScope,
-                level = role.level,
-                description = role.description,
-                createTime = role.create_time,
-                updateBy = role.update_by,
-                updateTime = role.update_time
+                id = curr.Id,
+                name = curr.Name,
+                dataScope = curr.dataScope,
+                level = curr.level,
+                description = curr.description,
+                createTime = curr.create_time,
+                updateBy = curr.update_by,
+                updateTime = curr.update_time,
+                menus = menuObjs
             };
             return model;
         }

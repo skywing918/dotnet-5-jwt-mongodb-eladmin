@@ -9,7 +9,7 @@
     public class Role : MongoIdentityRole<Guid>
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public List<string> MenuIds { get; set; }
+        public IEnumerable<string> MenuIds { get; set; }
         [BsonRepresentation(BsonType.ObjectId)]
         public List<string> deptIds { get; set; }
         public string dataScope { get; set; }

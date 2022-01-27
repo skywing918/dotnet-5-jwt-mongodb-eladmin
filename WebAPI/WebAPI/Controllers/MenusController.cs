@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             var roleIds = User.FindAll(ClaimTypes.Role)?.Select(r => r.Value);
             var menuDtoList = await service.FindByRoles(roleIds);
 
-            var viewModel = menuDtoList.ToViewModel(c => c.Id, c => c.pid);
+            var viewModel = menuDtoList.ToVoViewModel(c => c.Id, c => c.pid);
             return viewModel;
         }
 

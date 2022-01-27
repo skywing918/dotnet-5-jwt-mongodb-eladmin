@@ -1,6 +1,7 @@
 ﻿namespace WebAPI.Common.Services
 {
     using Microsoft.AspNetCore.Identity;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -17,7 +18,7 @@
             var results = new List<Role>();
             foreach (var curr in Ids)
             {
-                var role = await _roleManager.FindByIdAsync(curr);
+                var role = await _roleManager.FindByIdAsync(curr);                
                 results.Add(role);
             }
 

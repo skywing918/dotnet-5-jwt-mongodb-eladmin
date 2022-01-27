@@ -52,7 +52,7 @@
 
     public static class MenuViewModelExtensions
     {
-        public static IEnumerable<MenuVoViewModel> ToViewModel(
+        public static IEnumerable<MenuVoViewModel> ToVoViewModel(
             this IEnumerable<Menu> menuDtos,
             Func<Menu, string> id_selector,
             Func<Menu, string> parent_id_selector,
@@ -61,7 +61,7 @@
 
             foreach (var menuDTO in menuDtos.Where(c => EqualityComparer<string>.Default.Equals(parent_id_selector(c), root_id)))
             {
-                var menuDtoList = menuDtos.ToViewModel(id_selector, parent_id_selector, id_selector(menuDTO));
+                var menuDtoList = menuDtos.ToVoViewModel(id_selector, parent_id_selector, id_selector(menuDTO));
                 var menuVo = new MenuVoViewModel();
                 menuVo.name = string.IsNullOrEmpty(menuDTO.component) ? menuDTO.title : menuDTO.component;
                 menuVo.path = menuDTO.pid == null ? $"/{menuDTO.path}" : menuDTO.path;
@@ -141,7 +141,7 @@
             return model;
         }
 
-        public static List<MenuViewModel> ToViewModel(this List<Menu> menus)
+        public static List<MenuViewModel> ToViewModel(this IEnumerable<Menu> menus)
         {
             var models = menus.Select(u => u.ToViewModel()).ToList();
             return models;
