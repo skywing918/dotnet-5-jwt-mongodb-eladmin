@@ -279,8 +279,8 @@
                    description = "用户状态",
                    dictDetails = new List<DictDetail>
                    {
-                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
-                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(), label= "激活",value="true", dict_sort=1 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(), label= "禁用",value="false", dict_sort=2 },
                    }
                },
                 new Dict
@@ -289,8 +289,8 @@
                   description = "用户状态",
                   dictDetails = new List<DictDetail>
                   {
-                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
-                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(),  label= "激活",value="true", dict_sort=1 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(),  label= "禁用",value="false", dict_sort=2 },
                   }
               },
                new Dict
@@ -299,8 +299,8 @@
                   description = "用户状态",
                   dictDetails = new List<DictDetail>
                   {
-                       new DictDetail {  label= "激活",value="true", dict_sort=1 },
-                       new DictDetail {  label= "禁用",value="false", dict_sort=2 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(),   label= "激活",value="true", dict_sort=1 },
+                       new DictDetail { Id= ObjectId.GenerateNewId().ToString(),  label= "禁用",value="false", dict_sort=2 },
                   }
               }
 

@@ -14,6 +14,16 @@
 
     public static class DictViewModelExtensions
     {
+        public static Dict ToModel(this DictViewModel curr)
+        {
+            var model = new Dict
+            {
+                name = curr.name,
+                description = curr.description
+            };
+            return model;
+        }
+
         public static DictViewModel ToViewModel(this Dict curr)
         {
             var model = new DictViewModel
@@ -21,7 +31,7 @@
                 id = curr.Id,
                 name = curr.name,
                 description = curr.description,
-                dictDetails = curr.dictDetails.ToViewModel()
+                dictDetails = curr.dictDetails?.ToViewModel()
             };
             return model;
         }

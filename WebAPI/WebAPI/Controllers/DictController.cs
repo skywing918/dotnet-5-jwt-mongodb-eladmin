@@ -29,19 +29,41 @@ namespace WebAPI.Controllers
         {
             var filterBuilder = Builders<Dict>.Filter;
             var filter = filterBuilder.Empty;//.Eq(x => x.pid, criteria.pid);
-            var menus = await service.queryAll(filter);
+            var dicts = await service.queryAll(filter);
             List<Dict> pageData;
             if (criteria.size != 0)
             {
-                pageData = menus.Skip((criteria.page) * criteria.size).Take(criteria.size).ToList();
+                pageData = dicts.Skip((criteria.page) * criteria.size).Take(criteria.size).ToList();
             }
             else
             {
-                pageData = menus.ToList();
+                pageData = dicts.ToList();
             }
 
-            var totalRecords = menus.Count();
+            var totalRecords = dicts.Count();
             return Ok(new PagedResponse<List<DictViewModel>>(pageData.ToViewModel(), totalRecords));
+        }
+
+        [HttpPost]
+        public async Task<Dict> Post([FromBody] DictViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.create_time = DateTime.Now;
+            return await service.Create(curr);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] DictViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.update_time = DateTime.Now;
+            await service.Update(viewModel.id, curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
         }
     }
 }

@@ -41,6 +41,7 @@ namespace WebAPI.Controllers
             return new OkObjectResult(jwt);
         }
 
+        [AllowAnonymous]
         [Route("logout")]
         [HttpDelete]
         public async Task<IActionResult> logout()
