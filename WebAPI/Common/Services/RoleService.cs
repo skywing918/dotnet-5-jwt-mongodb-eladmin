@@ -18,7 +18,7 @@
             var results = new List<Role>();
             foreach (var curr in Ids)
             {
-                var role = await _roleManager.FindByIdAsync(curr);                
+                var role = await _roleManager.FindByIdAsync(curr);
                 results.Add(role);
             }
 
@@ -33,6 +33,26 @@
                 return await _roleManager.CreateAsync(role);
             }
             return null;
+        }
+
+        public async Task Update(Role curr)
+        {
+            var role = await _roleManager.FindByIdAsync(curr.Id.ToString());
+            role.Name = curr.Name;
+            role.level = curr.level;
+            role.dataScope = curr.dataScope;
+            role.description = curr.description;
+            role.update_time = DateTime.Now;
+            await _roleManager.UpdateAsync(role);
+        }
+
+        public async Task Delete(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                var role = await _roleManager.FindByIdAsync(id);
+                await _roleManager.DeleteAsync(role);
+            }
         }
     }
 }

@@ -6,6 +6,18 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.ViewModels
 {
+    public class ReqDeptViewModel
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string enabled { get; set; }
+        public string isTop { get; set; }
+        public string pid { get; set; }
+        public int deptSort { get; set; }
+        public int subCount { get; set; }
+        public DateTime updateTime { get; set; }
+    }
+
     public class DeptViewModel
     {
         public string id { get; set; }
@@ -25,13 +37,13 @@ namespace WebAPI.ViewModels
     }
     public static class DeptViewModelExtensions
     {
-        public static Dept ToModel(this DeptViewModel curr)
+        public static Dept ToModel(this ReqDeptViewModel curr)
         {
             var model = new Dept
             {
                 name = curr.name,
-                enabled = curr.enabled,
-                create_time = curr.createTime,
+                enabled = bool.Parse(curr.enabled),
+                update_time = curr.updateTime,
                 deptSort = curr.deptSort,
                 pid = curr.pid
             };

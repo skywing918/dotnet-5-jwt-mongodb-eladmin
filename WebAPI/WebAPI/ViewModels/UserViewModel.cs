@@ -5,6 +5,21 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.ViewModels
 {
+    public class ReqUserViewModel
+    {
+        public Guid? id { get; set; }
+
+        public DeptViewModel dept { get; set; }
+        public List<JobViewModel> jobs { get; set; }
+        public List<RoleViewModel> roles { get; set; }
+        public string username { get; set; }
+        public string nickName { get; set; }
+        public string email { get; set; }
+        public int phone { get; set; }
+        public string gender { get; set; }
+        public string enabled { get; set; }
+    }
+
     public class UserViewModel
     {
         public Guid id { get; set; }
@@ -22,6 +37,21 @@ namespace WebAPI.ViewModels
     }
     public static class UserViewModelExtensions
     {
+        public static User ToModel(this ReqUserViewModel curr)
+        {
+            var model = new User
+            {
+                UserName = curr.username,
+                gender = curr.gender,
+                enabled = bool.Parse(curr.enabled),
+                Email = curr.email,
+                nick_name = curr.nickName,
+                phone = curr.phone.ToString(),
+                Roles = curr.roles.Select(x=>x.id.Value).ToList(),                
+            };
+            return model;
+        }
+
         public static UserViewModel ToViewModel(this User user)
         {
             var model = new UserViewModel

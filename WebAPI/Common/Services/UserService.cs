@@ -39,6 +39,28 @@
             return res;
         }
 
+        public async Task Update(User curr)
+        {
+            var user = await _userManager.FindByIdAsync(curr.Id.ToString());
+            user.UserName = curr.UserName;
+            user.gender = curr.gender;
+            user.enabled = curr.enabled;
+            user.Email = curr.Email;
+            user.nick_name = curr.nick_name;
+            user.phone = curr.phone;
+            user.Roles = curr.Roles;   
+            await _userManager.UpdateAsync(user);
+        }
+
+        public async Task Delete(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                await _userManager.DeleteAsync(user);
+            }
+        }
+
         public async Task<string> Authenticate(string userName, string password)
         {
             var identity = await GetClaimsIdentity(userName, password);

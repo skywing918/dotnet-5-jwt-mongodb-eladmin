@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Common.Models;
 using WebAPI.Common.Services;
 using WebAPI.ViewModels;
 
@@ -45,6 +46,35 @@ namespace WebAPI.Controllers
         {
             var result = new { level = 1 };
             return new OkObjectResult(JsonConvert.SerializeObject(result));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] RoleViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.create_time = DateTime.Now;
+            curr.update_time = DateTime.Now;
+            var result = await service.CreateAsync(curr);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }            
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] RoleViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.Id = viewModel.id.Value;
+            curr.update_time = DateTime.Now;
+            await service.Update(curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
         }
     }
 }

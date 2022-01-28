@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<Dept> Post([FromBody] DeptViewModel viewModel)
+        public async Task<Dept> Post([FromBody] ReqDeptViewModel viewModel)
         {
             var curr = viewModel.ToModel();
             curr.create_time = DateTime.Now;
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task Put([FromBody] DeptViewModel viewModel)
+        public async Task Put([FromBody] ReqDeptViewModel viewModel)
         {
             var curr = viewModel.ToModel();
             curr.update_time = DateTime.Now;

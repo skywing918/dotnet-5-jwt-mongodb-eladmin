@@ -8,7 +8,7 @@ namespace WebAPI.ViewModels
 {
     public class RoleViewModel
     {
-        public Guid id { get; set; }
+        public Guid? id { get; set; }
         public IEnumerable<MenuViewModel> menus { get; set; }
         public IEnumerable<DeptViewModel> depts { get; set; }
         public string name { get; set; }
@@ -22,10 +22,23 @@ namespace WebAPI.ViewModels
 
     public static class RoleViewModelExtensions
     {
+        public static Role ToModel(this RoleViewModel curr)
+        {
+            var model = new Role
+            {                
+                Name = curr.name,
+                dataScope = curr.dataScope,
+                update_time = curr.updateTime,
+                level = curr.level,
+                description = curr.description
+            };
+            return model;
+        }
+
         public static RoleViewModel ToViewModel(this Role curr)
         {
             // build menu
-            var menuObjs = curr.MenuIds.Select(id => new MenuViewModel { id = id });
+            var menuObjs = curr.MenuIds?.Select(id => new MenuViewModel { id = id });
 
             var model = new RoleViewModel
             {

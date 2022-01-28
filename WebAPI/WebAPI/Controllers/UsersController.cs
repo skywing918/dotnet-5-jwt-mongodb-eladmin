@@ -30,5 +30,31 @@ namespace WebAPI.Controllers
             var totalRecords = service.GetUsers().Count();
             return Ok(new PagedResponse<List<UserViewModel>>(pageData.ToViewModel(), totalRecords));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] ReqUserViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();            
+            var result = await service.CreateAsync(curr,"Password01!");
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] ReqUserViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.Id = viewModel.id.Value;            
+            await service.Update(curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
+        }
     }
 }
