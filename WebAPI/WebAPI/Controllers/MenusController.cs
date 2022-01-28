@@ -82,5 +82,45 @@ namespace WebAPI.Controllers
             var totalRecords = menus.Count();
             return Ok(new PagedResponse<List<MenuViewModel>>(pageData.ToViewModel(), totalRecords));
         }
+
+        [HttpPost("superior")]
+        public async Task<IActionResult> getMenuSuperior([FromBody] List<string> ids)
+        {
+            if (ids.Count() == 0)
+            {
+                return Ok(service.GetMenus(null));
+            }
+            var menuDtos = new List<Menu>();
+            foreach(var id in ids)
+            {
+                var menuDto = await service.findById(id);
+                var menus = await service.getSuperior(menuDto, new List<Menu>());
+                menuDtos.AddRange(menus);
+            }            
+
+            return Ok(new PagedResponse<List<MenuViewModel>>(menuDtos.ToViewModel(), menuDtos.Count()));
+        }
+
+        [HttpPost]
+        public async Task<Menu> Post([FromBody] MenuViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.create_time = DateTime.Now;
+            return await service.Create(curr);
+        }
+
+        [HttpPut]
+        public async Task Put([FromBody] MenuViewModel viewModel)
+        {
+            var curr = viewModel.ToModel();
+            curr.update_time = DateTime.Now;
+            await service.Update(viewModel.id, curr);
+        }
+
+        [HttpDelete]
+        public async Task Delete(List<string> ids)
+        {
+            await service.Delete(ids);
+        }
     }
 }

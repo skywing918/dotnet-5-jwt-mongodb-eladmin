@@ -50,7 +50,7 @@ namespace WebAPI.ViewModels
                 dept = new DeptViewModel
                 {
                     id = user.dept_id,
-                    name = "华南分部",
+                    //name = "华南分部",
                 },
                 username = user.UserName,
                 nickName = user.nick_name,

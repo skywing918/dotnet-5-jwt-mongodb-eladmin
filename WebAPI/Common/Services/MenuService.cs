@@ -16,7 +16,7 @@
         private readonly RoleService _roleService;
         private readonly MongoDbHelper _client;
 
-        public MenuService(IConfiguration configuation,RoleService roleService)
+        public MenuService(IConfiguration configuation, RoleService roleService)
         {
             _roleService = roleService;
             _client = new MongoDbHelper(configuation.GetConnectionString("EladminDb"));
@@ -36,11 +36,36 @@
             return await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
         }
 
+        public async Task<Menu> findById(string id)
+        {
+            var curr = await _client.GetRecordById<Menu>(collectionName, obj => obj.Id, id).ConfigureAwait(false);
 
-        
+            return curr;
+        }
+        public async Task<List<Menu>> getSuperior(Menu menuDto, List<Menu> menus)
+        {
+            if (menuDto.pid == null)
+            {
+                var found = await findByPid(null);
+                menus.AddRange(found);
+                return menus;
+            }
+            menus.AddRange(await findByPid(menuDto.pid));
+            var databyId = await findById(menuDto.pid);
+            return await getSuperior(databyId, menus);
+        }
 
-        public async Task<IQueryable<Menu>> GetMenusByCriteria(FilterDefinition<Menu> filter)        {
-           
+        public async Task<IQueryable<Menu>> findByPid(string pid)
+        {
+            var filterBuilder = Builders<Menu>.Filter;
+            var filter = filterBuilder.Eq(x => x.pid, pid);
+            var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
+            return results.AsQueryable();
+        }
+
+        public async Task<IQueryable<Menu>> GetMenusByCriteria(FilterDefinition<Menu> filter)
+        {
+
             var results = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
             return results.AsQueryable();
         }
@@ -53,9 +78,9 @@
 
         public async Task<IEnumerable<Menu>> getChildMenus(IEnumerable<Menu> menuList, List<Menu> menuSet)
         {
-            foreach(var menu in menuList)
+            foreach (var menu in menuList)
             {
-                menuSet.Add(menu); 
+                menuSet.Add(menu);
                 var filterBuilder = Builders<Menu>.Filter;
                 var filter = filterBuilder.Eq(x => x.pid, menu.Id);
                 var menus = await _client.GetWithFilter(collectionName, filter).ConfigureAwait(false);
@@ -80,6 +105,20 @@
         public async Task<Menu> FindOne(string id)
         {
             return await _client.GetRecordById<Menu>(collectionName, menu => menu.Id, id).ConfigureAwait(false);
+        }
+
+        public async Task Update(string id, Menu curr)
+        {
+            curr.Id = id;
+            await _client.UpdateRecord(collectionName, obj => obj.Id, id, curr).ConfigureAwait(false);
+        }
+
+        public async Task Delete(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                await _client.DeleteRecord<Menu>(collectionName, curr => curr.Id, id).ConfigureAwait(false);
+            }
         }
     }
 }

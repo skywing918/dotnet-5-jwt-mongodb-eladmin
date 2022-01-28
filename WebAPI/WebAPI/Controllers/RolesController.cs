@@ -24,6 +24,11 @@ namespace WebAPI.Controllers
             service = _service;
         }
 
+        [HttpGet("{id}")]
+        public IActionResult findRoleById(Guid id)
+        {
+            return Ok(service.GetRoles().FirstOrDefault(x => x.Id == id).ToViewModel());
+        }
         [HttpGet]
         public IActionResult queryRole([FromQuery] RoleQueryCriteria criteria)
         {
@@ -46,6 +51,14 @@ namespace WebAPI.Controllers
         {
             var result = new { level = 1 };
             return new OkObjectResult(JsonConvert.SerializeObject(result));
+        }
+
+        [HttpPut("menu")]
+        public async Task updateRoleMenu([FromBody] RoleViewModel viewModel)
+        {            
+            var curr = new Role { MenuIds = viewModel.menus?.Select(x=>x.id)};
+            curr.Id = viewModel.id.Value;            
+            await service.UpdateMenus(curr);
         }
 
         [HttpPost]

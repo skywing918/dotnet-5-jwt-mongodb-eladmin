@@ -46,6 +46,14 @@
             await _roleManager.UpdateAsync(role);
         }
 
+        public async Task UpdateMenus(Role curr)
+        {
+            var role = await _roleManager.FindByIdAsync(curr.Id.ToString());
+            role.MenuIds = curr.MenuIds;            
+            role.update_time = DateTime.Now;
+            var t= await _roleManager.UpdateAsync(role);
+        }
+
         public async Task Delete(List<string> ids)
         {
             foreach (var id in ids)

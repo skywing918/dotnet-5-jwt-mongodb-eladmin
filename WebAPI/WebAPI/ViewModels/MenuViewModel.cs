@@ -40,10 +40,10 @@
         public int type { get; set; }
         public string permission { get; set; }
         public string icon { get; set; }
-        public bool cache { get; set; }
-        public bool hidden { get; set; }
-        public string pid { get; set; }
-        public bool iFrame { get; set; }       
+        public object cache { get; set; }
+        public object hidden { get; set; }
+        public object pid { get; set; }
+        public object iFrame { get; set; }       
         public DateTime createTime { get; set; }
         public bool hasChildren { get; set; }
         public bool leaf { get; set; }
@@ -52,6 +52,32 @@
 
     public static class MenuViewModelExtensions
     {
+        public static Menu ToModel(this MenuViewModel curr)
+        {
+            string? pid = null;
+            if (curr.pid is string)
+            {
+                pid = curr.pid.ToString();
+            }
+            var model = new Menu
+            {
+                cache = bool.Parse(curr.cache.ToString()),
+                create_time = curr.createTime,
+                component = curr.component,
+                name = curr.componentName,
+                hidden = bool.Parse(curr.hidden.ToString()),
+                permission = curr.permission,
+                i_frame = bool.Parse(curr.iFrame.ToString()),
+                icon = curr.icon,
+                menu_sort = curr.menuSort,
+                path = curr.path,
+                title = curr.title,
+                type = (MenuType)curr.type,
+                pid = pid
+            };
+            return model;
+        }
+
         public static IEnumerable<MenuVoViewModel> ToVoViewModel(
             this IEnumerable<Menu> menuDtos,
             Func<Menu, string> id_selector,
