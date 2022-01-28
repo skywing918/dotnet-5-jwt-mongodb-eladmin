@@ -48,7 +48,9 @@
             user.Email = curr.Email;
             user.nick_name = curr.nick_name;
             user.phone = curr.phone;
-            user.Roles = curr.Roles;   
+            user.Roles = curr.Roles;
+            user.job_ids = curr.job_ids;
+            user.dept_id = curr.dept_id;
             await _userManager.UpdateAsync(user);
         }
 

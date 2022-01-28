@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ReqUserViewModel viewModel)
+        public async Task<IActionResult> Post([FromBody] UserViewModel viewModel)
         {
             var curr = viewModel.ToModel();            
             var result = await service.CreateAsync(curr,"Password01!");
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task Put([FromBody] ReqUserViewModel viewModel)
+        public async Task Put([FromBody] UserViewModel viewModel)
         {
             var curr = viewModel.ToModel();
             curr.Id = viewModel.id.Value;            

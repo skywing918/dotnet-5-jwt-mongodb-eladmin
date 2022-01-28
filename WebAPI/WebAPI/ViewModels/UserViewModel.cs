@@ -5,49 +5,39 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.ViewModels
 {
-    public class ReqUserViewModel
-    {
-        public Guid? id { get; set; }
-
-        public DeptViewModel dept { get; set; }
-        public List<JobViewModel> jobs { get; set; }
-        public List<RoleViewModel> roles { get; set; }
-        public string username { get; set; }
-        public string nickName { get; set; }
-        public string email { get; set; }
-        public int phone { get; set; }
-        public string gender { get; set; }
-        public string enabled { get; set; }
-    }
+    
 
     public class UserViewModel
     {
-        public Guid id { get; set; }
-
+        public Guid? id { get; set; }
+        public List<RoleViewModel> roles { get; set; }
+        public List<JobViewModel> jobs { get; set; }
         public DeptViewModel dept { get; set; }
-        public string name { get; set; }
         public string username { get; set; }
         public string nickName { get; set; }
         public string email { get; set; }
-        public string phone { get; set; }
+        public long phone { get; set; }
         public string gender { get; set; }
         public string avatarName { get; set; }
         public string avatarPath { get; set; }
-        public bool enabled { get; set; }
+        public object enabled { get; set; }
     }
     public static class UserViewModelExtensions
-    {
-        public static User ToModel(this ReqUserViewModel curr)
+    {      
+
+        public static User ToModel(this UserViewModel curr)
         {
             var model = new User
             {
                 UserName = curr.username,
                 gender = curr.gender,
-                enabled = bool.Parse(curr.enabled),
+                enabled =bool.Parse(curr.enabled.ToString()),
                 Email = curr.email,
                 nick_name = curr.nickName,
-                phone = curr.phone.ToString(),
-                Roles = curr.roles.Select(x=>x.id.Value).ToList(),                
+                phone = curr.phone,
+                Roles = curr.roles?.Select(x => x.id.Value).ToList(),
+                job_ids = curr.jobs?.Select(x => x.id).ToList(),
+                dept_id = curr.dept.id
             };
             return model;
         }
@@ -59,6 +49,7 @@ namespace WebAPI.ViewModels
                 id = user.Id,
                 dept = new DeptViewModel
                 {
+                    id = user.dept_id,
                     name = "华南分部",
                 },
                 username = user.UserName,
@@ -66,7 +57,9 @@ namespace WebAPI.ViewModels
                 email = user.Email,
                 enabled = user.enabled,
                 gender = user.gender,
-                phone = user.phone,               
+                phone = user.phone,
+                roles = user.Roles?.Select(x=>new RoleViewModel { id = x}).ToList(),
+                jobs = user.job_ids?.Select(x => new JobViewModel { id = x }).ToList(),
             };
             return model;
         }

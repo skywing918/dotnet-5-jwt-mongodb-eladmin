@@ -9,9 +9,11 @@
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string dept_id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public List<string> job_ids { get; set; }        
         public string nick_name { get; set; }
         public string gender { get; set; }
-        public string phone { get; set; }        
+        public long phone { get; set; }        
         public string avatar_name { get; set; }
         public string avatar_path { get; set; }
         public bool is_admin { get; set; }

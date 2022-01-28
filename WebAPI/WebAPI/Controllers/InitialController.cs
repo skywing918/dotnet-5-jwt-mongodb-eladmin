@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using MongoDB.Bson;
+    using MongoDB.Driver;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -313,18 +314,23 @@
         private async Task InitialUserData()
         {
             var roleId = roleService.GetRoles().FirstOrDefault()?.Id;
+            var filterBuilder = Builders<Dept>.Filter;
+            var filter = filterBuilder.Empty;
+            var allDept = await deptService.queryAll(filter);
+            var deptid = allDept.FirstOrDefault().Id;
             var user = new User()
             {
                 UserName = "admin",
                 nick_name = "管理员",
                 gender = "男",
-                phone = "18888888888",
+                phone = 18888888888,
                 Email = "201507802@qq.com",
                 avatar_name = "avatar-20200806032259161.png",
                 avatar_path = "/Users/jie/Documents/work/me/admin/eladmin/~/avatar/avatar-20200806032259161.png",
                 Roles = new List<Guid> { roleId.Value },
                 is_admin = true,
-                enabled = true
+                enabled = true,
+                dept_id = deptid
             };
             var res = await userService.CreateAsync(user, "P@ssw0rd");
         }
